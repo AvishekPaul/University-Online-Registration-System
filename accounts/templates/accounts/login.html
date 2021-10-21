@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+    <title> Login</title>
+            
+{% endblock %}
+
+
+{% block body %}
+
+    <div class="formtitle">
+        <h1> Welcome to the Login page.</h1>
+    </div>
+    <div class="formstyle">
+    
+        <form method="POST">
+
+            {% csrf_token %}
+           <div class="user">
+               Username<br>
+               {{ form.username }}</div> 
+            <br>
+            <div class="user">
+                    Password<br>
+                    {{ form.password }}</div> 
+        
+           
+
+            <br>
+
+            <button type="submit" >Login</button>
+        </form>
+        <br>
+        <p>Are you New in This Site? <a href="/account/signup">Signup Here!</a></p>
+        
+        
+
+    </div>
+        
+
+{% endblock %}

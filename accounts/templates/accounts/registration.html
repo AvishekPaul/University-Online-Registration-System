@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th{
+            border: 2px solid #1AAB8A;
+            background-color:#1AAB8A;
+            text-align: left;
+            padding: 8px;
+        }
+
+        td {
+            border: 2px solid #1AAB8A;
+            text-align: left;
+            padding: 8px;
+        }
+
+
+    </style>
+
+    <title> Register</title>
+
+{% endblock %}
+
+
+{% block body %}
+
+    <div class="formtitle">
+        <h1> Welcome to the Exam Registration page.</h1>
+    </div>
+    <div class="signuptitle">
+        <h2> Register </h2>
+    </div>
+        <br>
+<div class="registrationform">
+        <fieldset>
+            <label for="roll">Roll:</label> {{ request.user.student.roll_no }}
+            <br>
+
+            <label for="registration-no">Registration No:</label> {{ request.user.student.registration_no }}
+            <br>
+            <label for="session">Session:</label> {{ request.user.student.session }}
+        </fieldset>
+
+        <br>
+        <form class="form-horizontal" action="" method="post" role="form">
+            {% csrf_token %}
+            <div class="form-group">
+                <fieldset>
+                    <legend>Select Your Semester</legend>
+                    <label for="semester">Semester:</label>
+                    {{ form.semester_no }}
+                </fieldset>
+
+
+                <h2>The courses you Want in your Exam</h2>
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Course No</th>
+                        <th>Course Title</th>
+                        <th>Credit</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table-body">
+                    </tbody>
+                </table>
+                <br>
+
+                <button type="submit" class="btn btn-success outline">Submit</button>
+                <br>
+            </div>
+        </form>
+
+    </div>
+
+
+{% endblock %}
+
+{% block extrajs %}
+    <script>
+        function safeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $('#{{ form.semester_no.auto_id }}').change(function () {
+            $.ajax({
+                method: 'post',
+                url: '.',
+                dataType: 'json',
+                data: {'semester_no': $(this).val()},
+                success: function (data) {
+                    let body = $('#table-body');
+                    body.html('');
+                    data.courses_list.forEach(function (item) {
+                        body.append('<tr>\n' +
+                            '<td>' + item.course_no + '</td>\n' +
+                            '<td>' + item.course_title + '</td>\n' +
+                            '<td>' + item.credit + '</td>\n' +
+                            '</tr>');
+                    });
+
+                },
+                error: function (data) {
+
+                },
+                beforeSend: function (xhr, settings) {
+                    if (!safeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", Cookies.get('csrftoken'));
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+        
